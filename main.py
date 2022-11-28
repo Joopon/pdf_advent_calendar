@@ -6,7 +6,7 @@ import os
 IMAGE_SIZE = (3508, 2480) # a4 300 ppi
 
 BORDER_PERCENT = (0.06, 0.09)
-DOOR_PERCENT =  (0.85, 0.82)
+DOOR_PERCENT =  (0.85, 0.8)
 GAP_PERCENT =  (1-BORDER_PERCENT[0]-DOOR_PERCENT[0], 1-BORDER_PERCENT[1]-DOOR_PERCENT[1])
 
 DOOR_IMAGE_OVERLAP = 3 # pixel
@@ -60,14 +60,12 @@ def add_door_image(back_image, door_image_name, door_pos_num, sizes):
 def make_front_image_doors(front_image, door_numbers, sizes):
     front_draw = ImageDraw.Draw(front_image)
     font = ImageFont.truetype("fonts/arial.ttf", FONT_SIZE)
-    idx = 0
-    for i in door_numbers:
-        door_pos = get_door_pos(idx, sizes)
+    for pos in range(24):
+        door_pos = get_door_pos(pos, sizes)
         door_rect = [door_pos, (door_pos[0]+sizes['door'][0], door_pos[1]+sizes['door'][1])]
         front_draw.rectangle(door_rect, outline="black", width=DOOR_LINE_WIDTH)
         num_pos = (door_pos[0] + int(sizes['door'][0]/2), door_pos[1] + int(sizes['door'][1]/2))
-        front_draw.text(num_pos, str(i), fill="black", font=font, anchor="mm")
-        idx+=1
+        front_draw.text(num_pos, str(door_numbers[pos]), fill="black", font=font, anchor="mm")
 
 def make_front_image(front_image_name):
     front_image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color=ImageColor.getrgb("white"))
@@ -108,7 +106,7 @@ make_front_image_doors(front_image, DOOR_NUMBERS, sizes)
 
 back_image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color=ImageColor.getrgb("white"))
 for pos in range(24):
-    add_door_image(back_image, door_image_names[pos], pos, sizes)
+    add_door_image(back_image, door_image_names[DOOR_NUMBERS[pos]-1], pos, sizes)
 
 #front_image.show()
 #back_image.show()
