@@ -1,7 +1,7 @@
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 from PIL import ImageColor
-import random
+import os
 
 IMAGE_SIZE = (3508, 2480) # a4 300 ppi
 
@@ -13,7 +13,7 @@ DOOR_IMAGE_OVERLAP = 3 # pixel
 DOOR_LINE_WIDTH = 2
 FONT_SIZE = 50
 
-FRONT_IMAGE_NAME = "front-image.png"
+IMAGES_DIR = "images"
 
 DOOR_NUMBERS = [
     2, 1, 3, 4, 5, 6, 
@@ -34,7 +34,7 @@ def resize_image(image, new_size):
     ratio = max(ratio_x, ratio_y)
     resized = image.resize((int(ratio*image.size[0]), int(ratio*image.size[1])))
     assert(resized.size[0] >= new_size[0] and resized.size[1] >= new_size[1])
-    
+
     diff = (resized.size[0] - new_size[0], resized.size[1] - new_size[1])
     resized = resized.crop((diff[0]/2, diff[1]/2, diff[0]/2 + new_size[0], diff[1]/2 + new_size[1]))
     assert(resized.size[0] == new_size[0] and resized.size[1] == new_size[1])
@@ -68,18 +68,43 @@ def make_front_image_doors(front_image, door_numbers, sizes):
         front_draw.text(num_pos, str(i), fill="black", font=font, anchor="mm")
         idx+=1
 
+def load_image_names():
+    files = os.listdir(IMAGES_DIR)
+    door_images = [None]*24
+    front_image = None
+    for file in files:
+        file_no_ext = os.path.splitext(file)[0]
+        if file_no_ext.isnumeric():
+            if int(file_no_ext) in range(1,25):
+                door_images[int(file_no_ext)-1] = os.path.join(IMAGES_DIR, file)
+
+        if file_no_ext == "front-image":
+            front_image = os.path.join(IMAGES_DIR, file)
+
+    for i in range(24):
+        if door_images[i] == None:
+            print("Door image " + str(i+1) + " is missing in directory '" + str(IMAGES_DIR) + "'")
+            exit(-1)
+
+    if front_image == None:
+        print("No front image in directory '" + str(IMAGES_DIR) + "'")
+        exit(-1)
+
+    return front_image, door_images
+
 sizes = calculate_sizes()
+front_image_name, door_image_names = load_image_names()
 
 #image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color="#ff00ff")
-front_image = PIL.Image.open(FRONT_IMAGE_NAME)
+front_image = PIL.Image.open(front_image_name)
 back_image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color=ImageColor.getrgb("white"))
 
 front_image = resize_image(front_image, IMAGE_SIZE)
 make_front_image_doors(front_image, DOOR_NUMBERS, sizes)
 front_image.show()
 
-for i in range(24):
-    add_door_image(back_image, "test-door.jpg", i, sizes)
+for pos in range(24):
+    add_door_image(back_image, door_image_names[pos], pos, sizes)
 
 back_image.show()
 
