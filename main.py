@@ -14,10 +14,11 @@ DOOR_LINE_WIDTH = 2
 FONT_SIZE = 50
 
 IMAGES_DIR = "images"
+OUTPUT_DIR = "output"
 
 DOOR_NUMBERS = [
-    2, 1, 3, 4, 5, 6, 
-    7, 8, 9, 10, 11, 12,
+     1,  2,  3,  4,  5,  6, 
+     7,  8,  9, 10, 11, 12,
     13, 14, 15, 16, 17, 18, 
     19, 20, 21, 22, 23, 24 ]
 
@@ -68,6 +69,13 @@ def make_front_image_doors(front_image, door_numbers, sizes):
         front_draw.text(num_pos, str(i), fill="black", font=font, anchor="mm")
         idx+=1
 
+def make_front_image(front_image_name):
+    front_image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color=ImageColor.getrgb("white"))
+    image = PIL.Image.open(front_image_name)
+    image = resize_image(image, IMAGE_SIZE)
+    front_image.paste(image)
+    return front_image
+
 def load_image_names():
     files = os.listdir(IMAGES_DIR)
     door_images = [None]*24
@@ -95,21 +103,19 @@ def load_image_names():
 sizes = calculate_sizes()
 front_image_name, door_image_names = load_image_names()
 
-#image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color="#ff00ff")
-front_image = PIL.Image.open(front_image_name)
-back_image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color=ImageColor.getrgb("white"))
-
-front_image = resize_image(front_image, IMAGE_SIZE)
+front_image = make_front_image(front_image_name)
 make_front_image_doors(front_image, DOOR_NUMBERS, sizes)
-front_image.show()
 
+back_image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color=ImageColor.getrgb("white"))
 for pos in range(24):
     add_door_image(back_image, door_image_names[pos], pos, sizes)
 
-back_image.show()
+#front_image.show()
+#back_image.show()
 
+if not os.path.exists(OUTPUT_DIR):
+    print("Output directory '" + OUTPUT_DIR + "' doesn't exist. No pdfs were created")
+    exit()
 
-#back_image.save("/tmp/output.pdf", "PDF")
-#back_image.close()
-
-    
+front_image.save(os.path.join(OUTPUT_DIR, "front-image.pdf"), "PDF")
+back_image.save(os.path.join(OUTPUT_DIR, "back-image.pdf"), "PDF")
