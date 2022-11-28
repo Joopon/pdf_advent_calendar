@@ -2,6 +2,7 @@ import PIL
 from PIL import Image, ImageDraw, ImageFont
 from PIL import ImageColor
 import os
+import math
 
 IMAGE_SIZE = (3508, 2480) # a4 300 ppi
 
@@ -33,7 +34,7 @@ def resize_image(image, new_size):
     ratio_x = new_size[0] / image.size[0]
     ratio_y = new_size[1] / image.size[1]
     ratio = max(ratio_x, ratio_y)
-    resized = image.resize((int(ratio*image.size[0]), int(ratio*image.size[1])))
+    resized = image.resize((math.ceil(ratio*image.size[0]), math.ceil(ratio*image.size[1]))) # ceil size: if size ends up longer than new_size, it gets croped afterwards
     assert(resized.size[0] >= new_size[0] and resized.size[1] >= new_size[1])
 
     diff = (resized.size[0] - new_size[0], resized.size[1] - new_size[1])
