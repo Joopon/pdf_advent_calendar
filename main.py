@@ -13,6 +13,8 @@ DOOR_IMAGE_OVERLAP = 3 # pixel
 DOOR_LINE_WIDTH = 2
 FONT_SIZE = 50
 
+FRONT_IMAGE_NAME = "front-image.png"
+
 DOOR_NUMBERS = [
     2, 1, 3, 4, 5, 6, 
     7, 8, 9, 10, 11, 12,
@@ -25,6 +27,19 @@ def calculate_sizes():
     gap_size = (int((IMAGE_SIZE[0]*GAP_PERCENT[0])/5), int((IMAGE_SIZE[1]*GAP_PERCENT[1])/3))
     return {'border': border_size, 'door': door_size, 'gap': gap_size}
 
+# fixed aspect ratio scale, then crop to new size
+def resize_image(image, new_size):
+    ratio_x = new_size[0] / image.size[0]
+    ratio_y = new_size[1] / image.size[1]
+    ratio = max(ratio_x, ratio_y)
+    resized = image.resize((int(ratio*image.size[0]), int(ratio*image.size[1])))
+    assert(resized.size[0] >= new_size[0] and resized.size[1] >= new_size[1])
+    
+    diff = (resized.size[0] - new_size[0], resized.size[1] - new_size[1])
+    resized = resized.crop((diff[0]/2, diff[1]/2, diff[0]/2 + new_size[0], diff[1]/2 + new_size[1]))
+    assert(resized.size[0] == new_size[0] and resized.size[1] == new_size[1])
+    return resized
+
 def get_door_pos(pos_num, sizes):
     assert(pos_num < 24)
     x = int(pos_num%6)
@@ -36,7 +51,7 @@ def get_door_pos(pos_num, sizes):
 def add_door_image(back_image, door_image_name, door_pos_num, sizes):
     door_image = PIL.Image.open(door_image_name)
     door_size = (sizes['door'][0] + 2*DOOR_IMAGE_OVERLAP, sizes['door'][1] + 2*DOOR_IMAGE_OVERLAP)
-    door_image = door_image.resize(door_size)
+    door_image = resize_image(door_image, door_size)
     door_pos = get_door_pos(door_pos_num, sizes)
     door_pos = (door_pos[0] - DOOR_IMAGE_OVERLAP, door_pos[1] - DOOR_IMAGE_OVERLAP)
     back_image.paste(door_image, door_pos)
@@ -56,17 +71,17 @@ def make_front_image_doors(front_image, door_numbers, sizes):
 sizes = calculate_sizes()
 
 #image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color="#ff00ff")
-front_image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color=ImageColor.getrgb("white"))
+front_image = PIL.Image.open(FRONT_IMAGE_NAME)
 back_image = PIL.Image.new(mode="RGB", size=IMAGE_SIZE, color=ImageColor.getrgb("white"))
 
-
+front_image = resize_image(front_image, IMAGE_SIZE)
 make_front_image_doors(front_image, DOOR_NUMBERS, sizes)
 front_image.show()
 
 for i in range(24):
     add_door_image(back_image, "test-door.jpg", i, sizes)
 
-#back_image.show()
+back_image.show()
 
 
 #back_image.save("/tmp/output.pdf", "PDF")
