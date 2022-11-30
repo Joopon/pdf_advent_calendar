@@ -1,27 +1,33 @@
 from PIL import Image, ImageDraw, ImageFont
+import sys
 import os
 import math
 
-IMAGE_SIZE = (3508, 2480) # a4 300 ppi
 
-BORDER_PERCENT = (0.06, 0.09)
-DOOR_PERCENT =  (0.85, 0.8)
-GAP_PERCENT =  (1-BORDER_PERCENT[0]-DOOR_PERCENT[0], 1-BORDER_PERCENT[1]-DOOR_PERCENT[1])
+PROJECT_NAME = "my-project"
 
-DOOR_IMAGE_OVERLAP = 3 # pixel
-DOOR_LINE_WIDTH = 1
-LINE_COLOR = "black"
-FONT = "fonts/arial.ttf"
-FONT_SIZE = 55
+SCRIPT_DIR = os.path.dirname(__file__)
+PROJECT_DIR = os.path.join(SCRIPT_DIR, PROJECT_NAME)
+IMAGES_DIR = os.path.join(PROJECT_DIR, "images")
+OUTPUT_DIR = os.path.join(PROJECT_DIR, "output")
+sys.path.append(PROJECT_DIR)
+import ProjectSettings as ps # import project specific settings from PROJECT_DIR/ProjectSettings.py
 
-IMAGES_DIR = "images"
-OUTPUT_DIR = "output"
 
-DOOR_NUMBERS = [
-     1,  2,  3,  4,  5,  6, 
-     7,  8,  9, 10, 11, 12,
-    13, 14, 15, 16, 17, 18, 
-    19, 20, 21, 22, 23, 24 ]
+IMAGE_SIZE = ps.IMAGE_SIZE
+
+BORDER_PERCENT = ps.BORDER_PERCENT
+DOOR_PERCENT = ps.DOOR_PERCENT
+GAP_PERCENT = ps.GAP_PERCENT
+
+DOOR_IMAGE_OVERLAP = ps.DOOR_IMAGE_OVERLAP
+DOOR_LINE_WIDTH = ps.DOOR_LINE_WIDTH
+LINE_COLOR = ps.LINE_COLOR
+FONT = os.path.join(SCRIPT_DIR, "fonts", ps.FONT)
+FONT_SIZE = ps.FONT_SIZE
+
+DOOR_NUMBERS = ps.DOOR_NUMBERS
+
 
 def calculate_sizes():
     border_size = (int((IMAGE_SIZE[0]*BORDER_PERCENT[0])/2), int((IMAGE_SIZE[1]*BORDER_PERCENT[1])/2))
