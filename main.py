@@ -10,6 +10,7 @@ GAP_PERCENT =  (1-BORDER_PERCENT[0]-DOOR_PERCENT[0], 1-BORDER_PERCENT[1]-DOOR_PE
 
 DOOR_IMAGE_OVERLAP = 3 # pixel
 DOOR_LINE_WIDTH = 1
+LINE_COLOR = "black"
 FONT = "fonts/arial.ttf"
 FONT_SIZE = 55
 
@@ -63,9 +64,9 @@ def make_front_image_doors(front_image, door_numbers, sizes):
     for pos in range(24):
         door_pos = get_door_pos(pos, sizes)
         door_rect = [door_pos, (door_pos[0]+sizes['door'][0], door_pos[1]+sizes['door'][1])]
-        front_draw.rectangle(door_rect, outline="black", width=DOOR_LINE_WIDTH)
+        front_draw.rectangle(door_rect, outline=LINE_COLOR, width=DOOR_LINE_WIDTH)
         num_pos = (door_pos[0] + int(sizes['door'][0]/2), door_pos[1] + int(sizes['door'][1]/2))
-        front_draw.text(num_pos, str(door_numbers[pos]), fill="black", font=font, anchor="mm")
+        front_draw.text(num_pos, str(door_numbers[pos]), fill=LINE_COLOR, font=font, anchor="mm")
 
 def make_front_image(front_image_name):
     front_image = Image.new(mode="RGB", size=IMAGE_SIZE, color="white")
@@ -117,3 +118,6 @@ if not os.path.exists(OUTPUT_DIR):
 
 front_image.save(os.path.join(OUTPUT_DIR, "front-image.pdf"), "PDF")
 back_image.save(os.path.join(OUTPUT_DIR, "back-image.pdf"), "PDF")
+
+#front_image.save(os.path.join(OUTPUT_DIR, "front-image.png"), "PNG", dpi=(300,300))
+#back_image.save(os.path.join(OUTPUT_DIR, "back-image.png"), "PNG", dpi=(300,300))
