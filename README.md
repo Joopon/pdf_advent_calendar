@@ -16,7 +16,7 @@ $ pip install -r requirements.txt
 
 ## Usage
 - Put the 24 door images into `my-project/images`. You have to specify which image belongs to which door number by naming the file after the number (e.g. `1.png`, `12.jpg`)
-- Put the front image into `my-project/images` and name it front_image (e.g. `front_image.png`)
+- Put the front image into `my-project/images` and name it front-image (e.g. `front-image.png`)
 - Put TrueType font file into `fonts` (e.g. `arial.ttf`)
 - Adjust settings in `my-project/ProjectSettings.py`
 - Run Python program: `$ python main.py`
