@@ -26,13 +26,15 @@ LINE_COLOR = ps.LINE_COLOR
 FONT = os.path.join(SCRIPT_DIR, "fonts", ps.FONT)
 FONT_SIZE = ps.FONT_SIZE
 
+NUM_DOORS = ps.NUM_DOORS
+assert(NUM_DOORS[0] * NUM_DOORS[1] == 24)
 DOOR_NUMBERS = ps.DOOR_NUMBERS
 
 
 def calculate_sizes():
     border_size = (int((IMAGE_SIZE[0]*BORDER_PERCENT[0])/2), int((IMAGE_SIZE[1]*BORDER_PERCENT[1])/2))
-    door_size = (int((IMAGE_SIZE[0]*DOOR_PERCENT[0])/6), int((IMAGE_SIZE[1]*DOOR_PERCENT[1])/4))
-    gap_size = (int((IMAGE_SIZE[0]*GAP_PERCENT[0])/5), int((IMAGE_SIZE[1]*GAP_PERCENT[1])/3))
+    door_size = (int((IMAGE_SIZE[0]*DOOR_PERCENT[0])/NUM_DOORS[0]), int((IMAGE_SIZE[1]*DOOR_PERCENT[1])/NUM_DOORS[1]))
+    gap_size = (int((IMAGE_SIZE[0]*GAP_PERCENT[0])/(NUM_DOORS[0]-1)), int((IMAGE_SIZE[1]*GAP_PERCENT[1])/(NUM_DOORS[1]-1)))
     return {'border': border_size, 'door': door_size, 'gap': gap_size}
 
 # fixed aspect ratio scale, then crop to new size
@@ -50,8 +52,8 @@ def resize_image(image, new_size):
 
 def get_door_pos(pos_num, sizes):
     assert(pos_num < 24)
-    x = int(pos_num%6)
-    y = int(pos_num/6)
+    x = int(pos_num % NUM_DOORS[0])
+    y = int(pos_num / NUM_DOORS[0])
     x_pos = sizes['border'][0] + x*(sizes['door'][0]+sizes['gap'][0])
     y_pos = sizes['border'][1] + y*(sizes['door'][1]+sizes['gap'][1])
     return (x_pos, y_pos)

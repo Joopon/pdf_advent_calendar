@@ -10,6 +10,7 @@ LINE_COLOR = "black"
 FONT = "arial.ttf"
 FONT_SIZE = 55
 
+NUM_DOORS = (6, 4) # number of doors in x and y direction
 DOOR_NUMBERS = [
      1,  2,  3,  4,  5,  6,
      7,  8,  9, 10, 11, 12,
