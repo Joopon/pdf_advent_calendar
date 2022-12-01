@@ -43,8 +43,8 @@ def resize_image(image, new_size):
     resized = image.resize((math.ceil(ratio*image.size[0]), math.ceil(ratio*image.size[1]))) # ceil size: if size ends up longer than new_size, it gets croped afterwards
     assert(resized.size[0] >= new_size[0] and resized.size[1] >= new_size[1])
 
-    diff = (resized.size[0] - new_size[0], resized.size[1] - new_size[1])
-    resized = resized.crop((diff[0]/2, diff[1]/2, diff[0]/2 + new_size[0], diff[1]/2 + new_size[1]))
+    half_diff = (int((resized.size[0] - new_size[0])/2), int((resized.size[1] - new_size[1])/2))
+    resized = resized.crop((half_diff[0], half_diff[1], half_diff[0] + new_size[0], half_diff[1] + new_size[1]))
     assert(resized.size[0] == new_size[0] and resized.size[1] == new_size[1])
     return resized
 
